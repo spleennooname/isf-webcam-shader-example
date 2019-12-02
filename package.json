@@ -1,0 +1,9 @@
+{
+  "name": "typescript-5i4anz",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "interactive-shader-format": "^2.9.0",
+    "rxjs": "^6.5.2"
+  }
+}
