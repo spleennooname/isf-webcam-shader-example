@@ -28,9 +28,6 @@ const renderer = new ISFRenderer(gl);
 renderer.loadSource(isf2);
 
 const animate = () => {
-  /* if (video.readyState !== video.HAVE_ENOUGH_DATA) {
-    return
-  } */
   requestAnimationFrame(animate);
   now = window.performance.now();
   delta = now - then;
@@ -82,18 +79,18 @@ async function init (e) {
   try {
     console.log('init')
     const stream = await navigator.mediaDevices.getUserMedia(constraints)
-    handleSuccess(stream)
+    success(stream)
     e.target.disabled = true
   } catch (e) {
-    handleError(e)
+    error(e)
   }
 }
 
-function handleError (e) {
-
+const error = e =>{
+  console.error(e)
 }
 
-function handleSuccess (stream) {
+const success = stream =>{
   const video = document.querySelector('video')
   video.setAttribute('autoplay', '')
   video.setAttribute('muted', 'true')
@@ -101,10 +98,13 @@ function handleSuccess (stream) {
   const videoTracks = stream.getVideoTracks()
   console.log('Got stream with constraints:', constraints)
   console.log(`Using video device: ${videoTracks[0].label}`)
+  const aspectRatio = videoTracks[0].getSettings().aspectRatio
+  console.log( aspectRatio)
   window.stream = stream // make variable available to browser console
   if (video.mozSrcObject !== undefined) {
     // hack for Firefox < 19
     video.mozSrcObject = stream
+
   } else {
     if (typeof video.srcObject === 'object') {
       video.srcObject = stream
@@ -113,6 +113,7 @@ function handleSuccess (stream) {
       video.src = (window.URL && window.URL.createObjectURL(stream))
     }
   }
+  
 }
 
 document.querySelector('#video').addEventListener('click', e => init(e))
