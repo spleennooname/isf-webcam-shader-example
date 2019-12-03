@@ -21,7 +21,7 @@ module.exports = `
     }
   ],
   "ISFVSN" : "2",
-  "DESCRIPTION" : "glitch mixed"
+  "DESCRIPTION" : "glitch flood mixed"
 }
 */
 
@@ -40,7 +40,6 @@ void main() {
   vec2 uv = gl_FragCoord.xy / RENDERSIZE.xy;
 
   vec3 intensity = vec3(0.99);
-  vec2 flow;
 
   vec4 pixel = IMG_NORM_PIXEL(inputImage, uv);
 
@@ -50,12 +49,13 @@ void main() {
         bits = extract_bit(number, position, TIME);
 
   float vidSample = dot(vec3(1.0), pixel.rgb * bits * .95);
+  
   float vidSampleDx = dot(
             vec3(1.0), IMG_NORM_PIXEL(inputImage, uv + vec2(delta_x, 0.0)).rgb),
         vidSampleDy = dot(
             vec3(1.0), IMG_NORM_PIXEL(inputImage, uv + vec2(0.0, delta_y)).rgb);
 
-  flow =
+  vec2 flow =
       delta_x * bits * vec2(vidSampleDx - vidSample, vidSample - vidSampleDy);
 
   intensity *= 0.055;
@@ -64,9 +64,8 @@ void main() {
     intensity +=
         0.95 *
         (1.0 - IMG_NORM_PIXEL(bufferA, uv + vec2(delta_x, delta_y) * flow).rgb);
-    gl_FragColor = vec4(1.0 - intensity, 1.0);
-  } else {
-    gl_FragColor = vec4(1.0 - intensity, 1.0);
   }
+
+  gl_FragColor = vec4(1.0 - intensity, 1.0);
 }
 `

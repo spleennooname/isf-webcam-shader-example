@@ -1,10 +1,12 @@
-console.clear()
+console.clear();
+
+import { gsap} from 'gsap';
 
 import { of } from "rxjs";
 import { map } from "rxjs/operators";
 
 import "./style.scss";
-import isf2 from "./flood";
+import fsISF from "./glitch-flood";
 
 let then = window.performance.now();
 let now = 0;
@@ -25,7 +27,7 @@ canvas.height = canvas.clientHeight;
 const gl = canvas.getContext("webgl", glContext);
 
 const renderer = new ISFRenderer(gl);
-renderer.loadSource(isf2);
+renderer.loadSource(fsISF);
 
 const animate = () => {
   requestAnimationFrame(animate);
@@ -33,8 +35,8 @@ const animate = () => {
   delta = now - then;
   if (delta > fpsMs) {
     then = now - (delta % fpsMs);
-    renderer.setValue('inputImage', video)
-    renderer.setValue('TIME', time)
+    renderer.setValue("inputImage", video);
+    renderer.setValue("TIME", time);
     renderer.draw(canvas);
     time += 0.01;
   }
@@ -56,10 +58,9 @@ animate();
 
 // webcam
 
-
 const constraints = {
   audio: false,
-  video: true/*  {
+  video: true /*  {
     width: {
       min: 640,
       max: 1920
@@ -73,51 +74,56 @@ const constraints = {
       max: 60
     }
   } */
-}
+};
 
-async function init (e) {
+async function init(e) {
   try {
-    console.log('init')
-    const stream = await navigator.mediaDevices.getUserMedia(constraints)
-    success(stream)
-    e.target.disabled = true
+    console.log("init");
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    success(stream);
+    e.target.disabled = true;
   } catch (e) {
-    error(e)
+    error(e);
   }
 }
 
-const error = e =>{
-  console.error(e)
-}
+const error = e => {
+  console.error(e);
+};
 
-const success = stream =>{
-  const video = document.querySelector('video')
-  video.setAttribute('autoplay', '')
-  video.setAttribute('muted', 'true')
-  video.setAttribute('playsinline', '')
-  const videoTracks = stream.getVideoTracks()
-  console.log('Got stream with constraints:', constraints)
-  console.log(`Using video device: ${videoTracks[0].label}`)
-  const aspectRatio = videoTracks[0].getSettings().aspectRatio
-  console.log( aspectRatio)
-  window.stream = stream // make variable available to browser console
+const success = stream => {
+  const video = document.querySelector("video");
+  video.setAttribute("autoplay", "");
+  video.setAttribute("muted", "true");
+  video.setAttribute("playsinline", "");
+  const videoTracks = stream.getVideoTracks();
+  const aspectRatio = videoTracks[0].getSettings().aspectRatio;
+  console.log("Got stream with constraints:", videoTracks[0].label, constraints, aspectRatio);
+  window.stream = stream; // make variable available to browser console
   if (video.mozSrcObject !== undefined) {
     // hack for Firefox < 19
-    video.mozSrcObject = stream
-
+    video.mozSrcObject = stream;
   } else {
-    if (typeof video.srcObject === 'object') {
-      video.srcObject = stream
+    if (typeof video.srcObject === "object") {
+      video.srcObject = stream;
     } else {
-      window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL
-      video.src = (window.URL && window.URL.createObjectURL(stream))
+      window.URL =
+        window.URL || window.webkitURL || window.mozURL || window.msURL;
+      video.src = window.URL && window.URL.createObjectURL(stream);
     }
   }
-  
-}
+};
 
-document.querySelector('#video').addEventListener('click', e => init(e))
+// start
+document.querySelector("#cover").addEventListener("click", e => {
+  gsap.to("#cover", 0.35, {
+    autoAlpha: 0,
+    onComplete: () => {
+      init(e);
+    }
+  });
+});
 
 // rx
-const source = of("World").pipe(map(x => `Hello ${x}!`));
-source.subscribe(x => console.log(x));
+/* const source = of("World").pipe(map(x => `Hello ${x}!`));
+source.subscribe(x => console.log(x)); */
