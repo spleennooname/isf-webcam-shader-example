@@ -6,58 +6,12 @@ import { of } from "rxjs";
 import { map } from "rxjs/operators";
 
 import "./style.scss";
+
 import fsISF from "./glitch-flood";
 
-let then = window.performance.now();
-let now = 0;
-let delta = 0;
-let time = 0;
-const fpsMs = 60 / 1000;
-
-const glContext = {
-  antialias: true,
-  powerPreference: "high-performance"
-};
-
-const ISFRenderer = require("interactive-shader-format").Renderer;
-const canvas = document.querySelector("#canvas");
-canvas.width = canvas.clientWidth;
-canvas.height = canvas.clientHeight;
-
-const gl = canvas.getContext("webgl", glContext);
-
-const renderer = new ISFRenderer(gl);
-renderer.loadSource(fsISF);
-
-const animate = () => {
-  requestAnimationFrame(animate);
-  now = window.performance.now();
-  delta = now - then;
-  if (delta > fpsMs) {
-    then = now - (delta % fpsMs);
-    renderer.setValue("inputImage", video);
-    renderer.setValue("TIME", time);
-    renderer.draw(canvas);
-    time += 0.01;
-  }
-};
-
-const resize = e => {
-  var width = gl.canvas.clientWidth;
-  var height = gl.canvas.clientHeight;
-  if (gl.canvas.width !== width || gl.canvas.height !== height) {
-    gl.canvas.width = width;
-    gl.canvas.height = height;
-    renderer.draw(canvas);
-  }
-};
-
-then = window.performance.now();
-window.addEventListener("resize", resize);
-animate();
 
 // webcam
-
+let aspectRatio = 1.333;
 const constraints = {
   audio: false,
   video: true /*  {
@@ -74,6 +28,32 @@ const constraints = {
       max: 60
     }
   } */
+};
+
+const resize = e => {
+  var width = gl.canvas.clientWidth;
+  var height = gl.canvas.clientHeight;
+  if (gl.canvas.width !== width || gl.canvas.height !== height) {
+    video.style.width = ( aspectRatio * 100)+'vh';
+    gl.canvas.width = width;
+    gl.canvas.height = height;
+    document.querySelector('#status').innerHTML = width + ' ' + height+ ' ' + aspectRatio;
+    renderer.draw(canvas);
+  }
+};
+
+const animate = () => {
+  requestAnimationFrame(animate);
+  now = window.performance.now();
+  delta = now - then;
+  if (delta > fpsMs) {
+    then = now - (delta % fpsMs);
+    resize();
+    renderer.setValue("inputImage", video);
+    renderer.setValue("TIME", time);
+    renderer.draw(canvas);
+    time += 0.01;
+  }
 };
 
 async function init(e) {
@@ -97,7 +77,8 @@ const success = stream => {
   video.setAttribute("muted", "true");
   video.setAttribute("playsinline", "");
   const videoTracks = stream.getVideoTracks();
-  const aspectRatio = videoTracks[0].getSettings().aspectRatio;
+  const videoSettings = videoTracks[0].getSettings();
+  const aspectRatio = videoSettings.width / videoTracks[0].getSettings().height;
   console.log("Got stream with constraints:", videoTracks[0].label, videoTracks[0].getSettings(), aspectRatio);
   window.stream = stream; // make variable available to browser console
   if (video.mozSrcObject !== undefined) {
@@ -117,12 +98,36 @@ const success = stream => {
 // start
 document.querySelector("#cover").addEventListener("click", e => {
   gsap.to("#cover", 0.35, {
-    autoAlpha: 0,
+    autoAlpha: 0, 
     onComplete: () => {
       init(e);
     }
   });
 });
+
+let then = window.performance.now();
+let now = 0;
+let delta = 0;
+let time = 0;
+const fpsMs = 60 / 1000;
+
+const glContext = {
+  antialias: true,
+  powerPreference: "high-performance"
+};
+
+const ISFRenderer = require("interactive-shader-format").Renderer;
+const canvas = document.querySelector("#canvas");
+canvas.width = canvas.clientWidth;
+canvas.height = canvas.clientHeight;
+
+const gl = canvas.getContext("webgl", glContext);
+
+const renderer = new ISFRenderer(gl);
+renderer.loadSource(fsISF);
+
+then = window.performance.now();
+animate();
 
 // rx
 /* const source = of("World").pipe(map(x => `Hello ${x}!`));
