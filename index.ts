@@ -7,7 +7,7 @@ import { map } from "rxjs/operators";
 
 import "./style.scss";
 
-import { Renderer } from 'interactive-shader-format';
+import { Renderer } from "interactive-shader-format";
 import fsISF from "./glitch-flood";
 
 // webcam
@@ -140,10 +140,13 @@ const renderer = new Renderer(gl);
 renderer.loadSource(fsISF);
 
 then = window.performance.now();
- canvas.style.width =
-      aspectRatio > 1
-        ? aspectRatio * 100 + "vh"
-        : aspectRatio * window.innerHeight + "px";
+canvas.style.width =
+  aspectRatio > 1
+    ? aspectRatio * 100 + "vh"
+    : aspectRatio * window.innerHeight + "px";
+gl.canvas.width = (gl.canvas as HTMLCanvasElement).clientWidth;
+gl.canvas.height = (gl.canvas as HTMLCanvasElement).clientHeight
+renderer.draw(canvas);
 animate();
 
 // rx
