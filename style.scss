@@ -45,10 +45,11 @@ body {
 }
 
 canvas{
-  width: 100vm;
+  width: 133vh;
+  // max-width: 960px;
+  height: 100vh; //calc( 100vw / 1.333);
   display: block;
   touch-action: none;
-  height: calc( 100vw / 1.333);
 }
 
 .vid{

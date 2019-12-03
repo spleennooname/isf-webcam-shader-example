@@ -98,7 +98,7 @@ const success = stream => {
   video.setAttribute("playsinline", "");
   const videoTracks = stream.getVideoTracks();
   const aspectRatio = videoTracks[0].getSettings().aspectRatio;
-  console.log("Got stream with constraints:", videoTracks[0].label, constraints, aspectRatio);
+  console.log("Got stream with constraints:", videoTracks[0].label, videoTracks[0].getSettings(), aspectRatio);
   window.stream = stream; // make variable available to browser console
   if (video.mozSrcObject !== undefined) {
     // hack for Firefox < 19
