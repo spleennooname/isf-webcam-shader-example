@@ -1,6 +1,6 @@
 console.clear();
 
-import { gsap} from 'gsap';
+import { gsap } from "gsap";
 
 import { of } from "rxjs";
 import { map } from "rxjs/operators";
@@ -8,7 +8,6 @@ import { map } from "rxjs/operators";
 import "./style.scss";
 
 import fsISF from "./glitch-flood";
-
 
 // webcam
 let aspectRatio = 1.333;
@@ -34,10 +33,13 @@ const resize = e => {
   var width = gl.canvas.clientWidth;
   var height = gl.canvas.clientHeight;
   if (gl.canvas.width !== width || gl.canvas.height !== height) {
-    video.style.width = ( aspectRatio * 100)+'vh';
+    canvas.style.width =
+      aspectRatio > 1
+        ? aspectRatio * 100 + "vh"
+        : aspectRatio * window.innerHeight + "px";
     gl.canvas.width = width;
     gl.canvas.height = height;
-    document.querySelector('#status').innerHTML = width + ' ' + height+ ' ' + aspectRatio;
+    console.log(video.style.width, video.style.height);
     renderer.draw(canvas);
   }
 };
@@ -78,8 +80,20 @@ const success = stream => {
   video.setAttribute("playsinline", "");
   const videoTracks = stream.getVideoTracks();
   const videoSettings = videoTracks[0].getSettings();
-  const aspectRatio = videoSettings.width / videoTracks[0].getSettings().height;
-  console.log("Got stream with constraints:", videoTracks[0].label, videoTracks[0].getSettings(), aspectRatio);
+  const aspectRatio = videoSettings.width / videoSettings.height;
+
+  /*   video.style.width =
+      aspectRatio > 1 ? (aspectRatio * 100 )+ "vh" : (aspectRatio * window.innerHeight )+ "px"; */
+
+  document.querySelector("#status").innerHTML =
+    videoSettings.width + " " + videoSettings.height + " " + aspectRatio;
+
+  console.log(
+    "Got stream with constraints:",
+    videoTracks[0].label,
+    videoTracks[0].getSettings(),
+    aspectRatio
+  );
   window.stream = stream; // make variable available to browser console
   if (video.mozSrcObject !== undefined) {
     // hack for Firefox < 19
@@ -98,7 +112,7 @@ const success = stream => {
 // start
 document.querySelector("#cover").addEventListener("click", e => {
   gsap.to("#cover", 0.35, {
-    autoAlpha: 0, 
+    autoAlpha: 0,
     onComplete: () => {
       init(e);
     }
@@ -127,6 +141,7 @@ const renderer = new ISFRenderer(gl);
 renderer.loadSource(fsISF);
 
 then = window.performance.now();
+resize();
 animate();
 
 // rx
