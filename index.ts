@@ -7,6 +7,7 @@ import { map } from "rxjs/operators";
 
 import "./style.scss";
 
+import { Renderer } from 'interactive-shader-format';
 import fsISF from "./glitch-flood";
 
 // webcam
@@ -29,7 +30,7 @@ const constraints = {
   } */
 };
 
-const resize = e => {
+const resize = () => {
   var width = gl.canvas.clientWidth;
   var height = gl.canvas.clientHeight;
   if (gl.canvas.width !== width || gl.canvas.height !== height) {
@@ -39,7 +40,6 @@ const resize = e => {
         : aspectRatio * window.innerHeight + "px";
     gl.canvas.width = width;
     gl.canvas.height = height;
-    console.log(video.style.width, video.style.height);
     renderer.draw(canvas);
   }
 };
@@ -130,18 +130,20 @@ const glContext = {
   powerPreference: "high-performance"
 };
 
-const ISFRenderer = require("interactive-shader-format").Renderer;
-const canvas = document.querySelector("#canvas");
+const canvas: HTMLCanvasElement = document.querySelector("#canvas");
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
 
 const gl = canvas.getContext("webgl", glContext);
 
-const renderer = new ISFRenderer(gl);
+const renderer = new Renderer(gl);
 renderer.loadSource(fsISF);
 
 then = window.performance.now();
-resize();
+ canvas.style.width =
+      aspectRatio > 1
+        ? aspectRatio * 100 + "vh"
+        : aspectRatio * window.innerHeight + "px";
 animate();
 
 // rx
