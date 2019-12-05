@@ -36,10 +36,9 @@ const resize = () => {
   // Lookup the size the browser is displaying the canvas in CSS pixels
   // and compute a size needed to make our drawingbuffer match it in
   // device pixels.
-  var width  = Math.floor(gl.canvas.clientWidth  * realToCSSPixels);
+  var width = Math.floor(gl.canvas.clientWidth * realToCSSPixels);
   var height = Math.floor(gl.canvas.clientHeight * realToCSSPixels);
   if (gl.canvas.width !== width || gl.canvas.height !== height) {
-    
     gl.canvas.width = width;
     gl.canvas.height = height;
     renderer.draw(canvas);
@@ -52,13 +51,18 @@ const animate = () => {
   delta = now - then;
   if (delta > fpsMs) {
     then = now - (delta % fpsMs);
-    //console.log('run')
-    resize();
     renderer.setValue("inputImage", video);
     renderer.setValue("TIME", time);
     renderer.draw(canvas);
+    resize();
     time += 0.01;
   }
+};
+
+const render = ( { inputImage, time} ) => {
+    renderer.setValue("inputImage", inputImage);
+    renderer.setValue("TIME", time);
+    renderer.draw(canvas);
 };
 
 async function init(e) {
@@ -96,9 +100,9 @@ const success = stream => {
     aspectRatio
   );
   canvas.style.width =
-      aspectRatio > 1
-        ? aspectRatio * 100 + "vh"
-        : aspectRatio * window.innerHeight + "px";
+    aspectRatio > 1
+      ? aspectRatio * 100 + "vh"
+      : aspectRatio * window.innerHeight + "px";
   window.stream = stream; // make variable available to browser console
   if (video.mozSrcObject !== undefined) {
     // hack for Firefox < 19
