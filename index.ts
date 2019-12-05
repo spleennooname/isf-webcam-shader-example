@@ -42,10 +42,6 @@ const resize = () => {
     
     gl.canvas.width = width;
     gl.canvas.height = height;
-    canvas.style.width =
-      aspectRatio > 1
-        ? aspectRatio * 100 + "vh"
-        : aspectRatio * window.innerHeight + "px";
     renderer.draw(canvas);
   }
 };
