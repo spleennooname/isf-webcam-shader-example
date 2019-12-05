@@ -91,8 +91,8 @@ const success = stream => {
   const videoSettings = videoTracks[0].getSettings();
   const aspectRatio = videoSettings.width / videoSettings.height;
 
-  document.querySelector("#status").innerHTML =
-    videoSettings.width + " " + videoSettings.height + " " + aspectRatio;
+ /*  document.querySelector("#status").innerHTML =
+    videoSettings.width + " " + videoSettings.height + " " + aspectRatio; */
 
   console.log(
     "Got stream with constraints:",
