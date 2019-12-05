@@ -31,15 +31,21 @@ const constraints = {
 };
 
 const resize = () => {
-  var width = gl.canvas.clientWidth;
-  var height = gl.canvas.clientHeight;
+  var realToCSSPixels = window.devicePixelRatio;
+
+  // Lookup the size the browser is displaying the canvas in CSS pixels
+  // and compute a size needed to make our drawingbuffer match it in
+  // device pixels.
+  var width  = Math.floor(gl.canvas.clientWidth  * realToCSSPixels);
+  var height = Math.floor(gl.canvas.clientHeight * realToCSSPixels);
   if (gl.canvas.width !== width || gl.canvas.height !== height) {
+    
+    gl.canvas.width = width;
+    gl.canvas.height = height;
     canvas.style.width =
       aspectRatio > 1
         ? aspectRatio * 100 + "vh"
         : aspectRatio * window.innerHeight + "px";
-    gl.canvas.width = width;
-    gl.canvas.height = height;
     renderer.draw(canvas);
   }
 };
@@ -50,6 +56,7 @@ const animate = () => {
   delta = now - then;
   if (delta > fpsMs) {
     then = now - (delta % fpsMs);
+    //console.log('run')
     resize();
     renderer.setValue("inputImage", video);
     renderer.setValue("TIME", time);
@@ -78,12 +85,10 @@ const success = stream => {
   video.setAttribute("autoplay", "");
   video.setAttribute("muted", "true");
   video.setAttribute("playsinline", "");
+
   const videoTracks = stream.getVideoTracks();
   const videoSettings = videoTracks[0].getSettings();
   const aspectRatio = videoSettings.width / videoSettings.height;
-
-  /*   video.style.width =
-      aspectRatio > 1 ? (aspectRatio * 100 )+ "vh" : (aspectRatio * window.innerHeight )+ "px"; */
 
   document.querySelector("#status").innerHTML =
     videoSettings.width + " " + videoSettings.height + " " + aspectRatio;
@@ -94,6 +99,10 @@ const success = stream => {
     videoTracks[0].getSettings(),
     aspectRatio
   );
+  canvas.style.width =
+      aspectRatio > 1
+        ? aspectRatio * 100 + "vh"
+        : aspectRatio * window.innerHeight + "px";
   window.stream = stream; // make variable available to browser console
   if (video.mozSrcObject !== undefined) {
     // hack for Firefox < 19
@@ -135,18 +144,10 @@ canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
 
 const gl = canvas.getContext("webgl", glContext);
-
 const renderer = new Renderer(gl);
 renderer.loadSource(fsISF);
 
 then = window.performance.now();
-canvas.style.width =
-  aspectRatio > 1
-    ? aspectRatio * 100 + "vh"
-    : aspectRatio * window.innerHeight + "px";
-gl.canvas.width = (gl.canvas as HTMLCanvasElement).clientWidth;
-gl.canvas.height = (gl.canvas as HTMLCanvasElement).clientHeight
-renderer.draw(canvas);
 animate();
 
 // rx
