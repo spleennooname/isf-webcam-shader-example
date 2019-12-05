@@ -47,7 +47,7 @@ body {
 canvas{
   width: auto;
   // max-width: 960px;
-  height: 100vh; //calc( 100vw / 1.333);
+  height: 100vh; 
   display: block;
   touch-action: none;
 }
@@ -70,6 +70,11 @@ canvas{
   left: 0;
   z-index: 666;
   width: 100vw;
+  font-size: 1rem;
+  font-family: sans-serif;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   height: 100vh;
   display: flex;
   justify-content: center;

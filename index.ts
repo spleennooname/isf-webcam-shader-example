@@ -10,7 +10,46 @@ import "./style.scss";
 import { Renderer } from "interactive-shader-format";
 import fsISF from "./glitch-flood";
 
+
+
+const resize = () => {
+  var realToCSSPixels = window.devicePixelRatio;
+  // Lookup the size the browser is displaying the canvas in CSS pixels
+  // and compute a size needed to make our drawingbuffer match it in
+  // device pixels.
+  var width = Math.floor(gl.canvas.clientWidth * realToCSSPixels);
+  var height = Math.floor(gl.canvas.clientHeight * realToCSSPixels);
+  if (gl.canvas.width !== width || gl.canvas.height !== height) {
+    gl.canvas.width = width;
+    gl.canvas.height = height;
+    renderer.draw(canvas);
+    console.log('resize')
+  }
+};
+
+const animate = () => {
+  requestAnimationFrame(animate);
+  now = window.performance.now();
+  delta = now - then;
+  if (delta > fpsMs) {
+    then = now - (delta % fpsMs);
+    render({
+      inputImage: video,
+      time: time
+    })
+    resize();
+    time += 0.01;
+  }
+};
+
+const render = ( { inputImage, time} ) => {
+    renderer.setValue("inputImage", inputImage);
+    renderer.setValue("TIME", time);
+    renderer.draw(canvas);
+};
+
 // webcam
+
 let aspectRatio = 1.333;
 const constraints = {
   audio: false,
@@ -29,45 +68,8 @@ const constraints = {
     }
   } */
 };
-
-const resize = () => {
-  var realToCSSPixels = window.devicePixelRatio;
-
-  // Lookup the size the browser is displaying the canvas in CSS pixels
-  // and compute a size needed to make our drawingbuffer match it in
-  // device pixels.
-  var width = Math.floor(gl.canvas.clientWidth * realToCSSPixels);
-  var height = Math.floor(gl.canvas.clientHeight * realToCSSPixels);
-  if (gl.canvas.width !== width || gl.canvas.height !== height) {
-    gl.canvas.width = width;
-    gl.canvas.height = height;
-    renderer.draw(canvas);
-  }
-};
-
-const animate = () => {
-  requestAnimationFrame(animate);
-  now = window.performance.now();
-  delta = now - then;
-  if (delta > fpsMs) {
-    then = now - (delta % fpsMs);
-    renderer.setValue("inputImage", video);
-    renderer.setValue("TIME", time);
-    renderer.draw(canvas);
-    resize();
-    time += 0.01;
-  }
-};
-
-const render = ( { inputImage, time} ) => {
-    renderer.setValue("inputImage", inputImage);
-    renderer.setValue("TIME", time);
-    renderer.draw(canvas);
-};
-
 async function init(e) {
   try {
-    console.log("init");
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
     success(stream);
     e.target.disabled = true;
@@ -85,7 +87,6 @@ const success = stream => {
   video.setAttribute("autoplay", "");
   video.setAttribute("muted", "true");
   video.setAttribute("playsinline", "");
-
   const videoTracks = stream.getVideoTracks();
   const videoSettings = videoTracks[0].getSettings();
   const aspectRatio = videoSettings.width / videoSettings.height;
@@ -132,18 +133,17 @@ let then = window.performance.now();
 let now = 0;
 let delta = 0;
 let time = 0;
-const fpsMs = 60 / 1000;
-
-const glContext = {
-  antialias: true,
-  powerPreference: "high-performance"
-};
+let fps = 60;
+const fpsMs = fps / 1000;
 
 const canvas: HTMLCanvasElement = document.querySelector("#canvas");
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
 
-const gl = canvas.getContext("webgl", glContext);
+const gl = canvas.getContext("webgl",  {
+  antialias: true,
+  powerPreference: "high-performance"
+});
 const renderer = new Renderer(gl);
 renderer.loadSource(fsISF);
 
