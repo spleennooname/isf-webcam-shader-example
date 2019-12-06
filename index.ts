@@ -11,41 +11,6 @@ import { Renderer } from "interactive-shader-format";
 import fsISF from "./glitch-flood";
 
 
-const resize = () => {
-  var realToCSSPixels = window.devicePixelRatio;
-  // Lookup the size the browser is displaying the canvas in CSS pixels
-  // and compute a size needed to make our drawingbuffer match it in
-  // device pixels.
-  var width = Math.floor(gl.canvas.clientWidth * realToCSSPixels);
-  var height = Math.floor(gl.canvas.clientHeight * realToCSSPixels);
-  if (gl.canvas.width !== width || gl.canvas.height !== height) {
-    gl.canvas.width = width;
-    gl.canvas.height = height;
-    renderer.draw(canvas);
-  }
-};
-
-const animate = () => {
-  requestAnimationFrame(animate);
-  now = window.performance.now();
-  delta = now - then;
-  if (delta > fpsMs) {
-    if (video && video.readyState !== 4) return
-    then = now - (delta % fpsMs);
-    render({
-      inputImage: video,
-      time: time
-    })
-    resize();
-    time += 0.01;
-  }
-};
-
-const render = ( { inputImage, time} ) => {
-    renderer.setValue("inputImage", inputImage);
-    renderer.setValue("TIME", time);
-    renderer.draw(canvas);
-};
 
 // webcam
 
@@ -85,6 +50,43 @@ const gl = canvas.getContext("webgl",  {
 });
 const renderer = new Renderer(gl);
 renderer.loadSource(fsISF);
+
+
+const resize = () => {
+  var realToCSSPixels = window.devicePixelRatio;
+  // Lookup the size the browser is displaying the canvas in CSS pixels
+  // and compute a size needed to make our drawingbuffer match it in
+  // device pixels.
+  var width = Math.floor(gl.canvas.clientWidth * realToCSSPixels);
+  var height = Math.floor(gl.canvas.clientHeight * realToCSSPixels);
+  if (gl.canvas.width !== width || gl.canvas.height !== height) {
+    gl.canvas.width = width;
+    gl.canvas.height = height;
+    renderer.draw(canvas);
+  }
+};
+
+const animate = () => {
+  requestAnimationFrame(animate);
+  now = window.performance.now();
+  delta = now - then;
+  if (delta > fpsMs) {
+    if (video && video.readyState !== 4) return
+    then = now - (delta % fpsMs);
+    render({
+      inputImage: video,
+      time: time
+    })
+    resize();
+    time += 0.01;
+  }
+};
+
+const render = ( { inputImage, time} ) => {
+    renderer.setValue("inputImage", inputImage);
+    renderer.setValue("TIME", time);
+    renderer.draw(canvas);
+};
 
 async function init(e) {
   try {
@@ -129,7 +131,15 @@ const success = stream => {
       video.src = window.URL && window.URL.createObjectURL(stream);
     }
   }
-  canvas.style.width = aspectRatio * 100 + "vh" 
+  // resize css display canvas
+  if (aspectRatio > 1) { // w >h
+    canvas.style.width = '100vw';
+    canvas.style.height = (100/aspectRatio) + 'vw'
+  }
+  else {
+    canvas.style.width = aspectRatio * 100 + 'vh';
+    canvas.style.height = '100vh'
+  }
 };
 
 // start
