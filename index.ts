@@ -154,8 +154,6 @@ document.querySelector("#cover").addEventListener("click", e => {
   });
 });
 
-
-
 // rx
 /* const source = of("World").pipe(map(x => `Hello ${x}!`));
 source.subscribe(x => console.log(x)); */
