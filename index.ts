@@ -11,7 +11,6 @@ import { Renderer } from "interactive-shader-format";
 import fsISF from "./glitch-flood";
 
 
-
 const resize = () => {
   var realToCSSPixels = window.devicePixelRatio;
   // Lookup the size the browser is displaying the canvas in CSS pixels
@@ -23,7 +22,6 @@ const resize = () => {
     gl.canvas.width = width;
     gl.canvas.height = height;
     renderer.draw(canvas);
-    console.log('resize')
   }
 };
 
@@ -32,6 +30,7 @@ const animate = () => {
   now = window.performance.now();
   delta = now - then;
   if (delta > fpsMs) {
+    if (video && video.readyState !== 4) return
     then = now - (delta % fpsMs);
     render({
       inputImage: video,
@@ -68,6 +67,25 @@ const constraints = {
     }
   } */
 };
+let then = window.performance.now();
+let now = 0;
+let delta = 0;
+let time = 0;
+let fps = 60;
+const fpsMs = fps / 1000;
+
+let video: HTMLVideoElement;
+const canvas: HTMLCanvasElement = document.querySelector("#canvas");
+canvas.width = canvas.clientWidth;
+canvas.height = canvas.clientHeight;
+
+const gl = canvas.getContext("webgl",  {
+  antialias: true,
+  powerPreference: "high-performance"
+});
+const renderer = new Renderer(gl);
+renderer.loadSource(fsISF);
+
 async function init(e) {
   try {
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -83,7 +101,7 @@ const error = e => {
 };
 
 const success = stream => {
-  const video = document.querySelector("video");
+  video = document.querySelector("video");
   video.setAttribute("autoplay", "");
   video.setAttribute("muted", "true");
   video.setAttribute("playsinline", "");
@@ -91,19 +109,13 @@ const success = stream => {
   const videoSettings = videoTracks[0].getSettings();
   const aspectRatio = videoSettings.width / videoSettings.height;
 
- /*  document.querySelector("#status").innerHTML =
-    videoSettings.width + " " + videoSettings.height + " " + aspectRatio; */
-
   console.log(
     "Got stream with constraints:",
     videoTracks[0].label,
     videoTracks[0].getSettings(),
     aspectRatio
   );
-  canvas.style.width =
-    aspectRatio > 1
-      ? aspectRatio * 100 + "vh"
-      : aspectRatio * window.innerHeight + "px";
+
   window.stream = stream; // make variable available to browser console
   if (video.mozSrcObject !== undefined) {
     // hack for Firefox < 19
@@ -117,6 +129,7 @@ const success = stream => {
       video.src = window.URL && window.URL.createObjectURL(stream);
     }
   }
+  canvas.style.width = aspectRatio * 100 + "vh" 
 };
 
 // start
@@ -129,26 +142,8 @@ document.querySelector("#cover").addEventListener("click", e => {
   });
 });
 
-let then = window.performance.now();
-let now = 0;
-let delta = 0;
-let time = 0;
-let fps = 60;
-const fpsMs = fps / 1000;
-
-const canvas: HTMLCanvasElement = document.querySelector("#canvas");
-canvas.width = canvas.clientWidth;
-canvas.height = canvas.clientHeight;
-
-const gl = canvas.getContext("webgl",  {
-  antialias: true,
-  powerPreference: "high-performance"
-});
-const renderer = new Renderer(gl);
-renderer.loadSource(fsISF);
-
 then = window.performance.now();
-animate();
+requestAnimationFrame(animate)
 
 // rx
 /* const source = of("World").pipe(map(x => `Hello ${x}!`));
