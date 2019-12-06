@@ -93,6 +93,8 @@ async function init(e) {
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
     success(stream);
     e.target.disabled = true;
+    then = window.performance.now();
+    requestAnimationFrame(animate)
   } catch (e) {
     error(e);
   }
@@ -152,8 +154,7 @@ document.querySelector("#cover").addEventListener("click", e => {
   });
 });
 
-then = window.performance.now();
-requestAnimationFrame(animate)
+
 
 // rx
 /* const source = of("World").pipe(map(x => `Hello ${x}!`));
