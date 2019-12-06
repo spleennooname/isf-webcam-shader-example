@@ -40,9 +40,14 @@ let fps = 60;
 const fpsMs = fps / 1000;
 
 let video: HTMLVideoElement;
+const image: HTMLImageElement = document.querySelector("#image");
 const canvas: HTMLCanvasElement = document.querySelector("#canvas");
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
+
+image.onload = function(){
+  console.log('loaded')
+}
 
 const gl = canvas.getContext("webgl",  {
   antialias: true,
