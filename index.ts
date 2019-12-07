@@ -1,36 +1,18 @@
 console.clear();
-
-import { gsap } from "gsap";
-
-import { of } from "rxjs";
-import { map } from "rxjs/operators";
-
 import "./style.scss";
-
+import { gsap } from "gsap";
+/* import { of } from "rxjs";
+import { map } from "rxjs/operators";
+ */
 import { Renderer } from "interactive-shader-format";
 import fsISF from "./glitch-flood";
-
-
 
 // webcam
 
 let aspectRatio = 1.333;
 const constraints = {
   audio: false,
-  video: true /*  {
-    width: {
-      min: 640,
-      max: 1920
-    },
-    height: {
-      min: 480,
-      max: 1080
-    },
-    frameRate: {
-      ideal: 50,
-      max: 60
-    }
-  } */
+  video: true 
 };
 let then = window.performance.now();
 let now = 0;
@@ -39,7 +21,7 @@ let time = 0;
 let fps = 60;
 const fpsMs = fps / 1000;
 
-let video: HTMLVideoElement;
+const video: HTMLVideoElement = document.querySelector("#video");
 const image: HTMLImageElement = document.querySelector("#image");
 const canvas: HTMLCanvasElement = document.querySelector("#canvas");
 canvas.width = canvas.clientWidth;
@@ -62,11 +44,11 @@ const resize = () => {
   // Lookup the size the browser is displaying the canvas in CSS pixels
   // and compute a size needed to make our drawingbuffer match it in
   // device pixels.
-  var width = Math.floor(gl.canvas.clientWidth * realToCSSPixels);
-  var height = Math.floor(gl.canvas.clientHeight * realToCSSPixels);
-  if (gl.canvas.width !== width || gl.canvas.height !== height) {
-    gl.canvas.width = width;
-    gl.canvas.height = height;
+  var width = Math.floor(canvas.clientWidth * realToCSSPixels);
+  var height = Math.floor(canvas.clientHeight * realToCSSPixels);
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width;
+    canvas.height = height;
     renderer.draw(canvas);
   }
 };
@@ -87,11 +69,12 @@ const animate = () => {
   }
 };
 
-const render = ( { inputImage, time} ) => {
-    renderer.setValue("inputImage", inputImage);
-    renderer.setValue("TIME", time);
-    renderer.draw(canvas);
-};
+const render = (renderObject = {}) => {
+  for (var unif in renderObject) {
+    renderer.setValue(unif, renderObject[unif])
+  }
+  renderer.draw(canvas)
+}
 
 async function init(e) {
   try {
@@ -110,7 +93,6 @@ const error = e => {
 };
 
 const success = stream => {
-  video = document.querySelector("video");
   video.setAttribute("autoplay", "");
   video.setAttribute("muted", "true");
   video.setAttribute("playsinline", "");
