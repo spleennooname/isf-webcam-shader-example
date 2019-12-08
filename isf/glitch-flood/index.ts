@@ -1,5 +1,5 @@
 
-export default `
+export const isfFragment = `
 /*
 {
   "CATEGORIES" : [
@@ -45,28 +45,34 @@ void main() {
 
   intensity -= pixel.rgb;
 
-  float position = floor(uv.y * 4.), 
-        number = floor(uv.x * 32.),
-        bits = extract_bit(number, position, TIME);
+  float position = floor(uv.y * 4.),
+    number = floor(uv.x * 32.),
+    bits = extract_bit(number, position, TIME);
 
   float sample = dot(vec3(1.0), pixel.rgb * bits * .95);
-  
+
   float sampleDx = dot(
-            vec3(1.0), IMG_NORM_PIXEL(inputImage, uv + vec2(deltaX, 0.0)).rgb),
-        sampleDy = dot(
-            vec3(1.0), IMG_NORM_PIXEL(inputImage, uv + vec2(0.0, deltaY)).rgb);
+    vec3(1.0), IMG_NORM_PIXEL(inputImage, uv + vec2(deltaX, 0.0)).rgb),
+    sampleDy = dot(
+      vec3(1.0), IMG_NORM_PIXEL(inputImage, uv + vec2(0.0, deltaY)).rgb);
 
   vec2 flow =
-      deltaY  * bits * vec2(sampleDx - sample, sample - sampleDy);
+    deltaY * bits * vec2(sampleDx - sample, sample - sampleDy);
 
   intensity *= 0.055;
 
   if (PASSINDEX == 0) {
     intensity +=
-        0.95 *
-        (1.0 - IMG_NORM_PIXEL(bufferA, uv + vec2(deltaX, deltaY) * flow).rgb);
+      0.95 *
+      (1.0 - IMG_NORM_PIXEL(bufferA, uv + vec2(deltaX, deltaY) * flow).rgb);
   }
 
   gl_FragColor = vec4(1.0 - intensity, 1.0);
 }
+`
+
+export const isfVertex = `
+  void main(){
+    isf_vertShaderInit();
+  }
 `

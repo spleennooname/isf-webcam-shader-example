@@ -5,7 +5,7 @@ import { gsap } from "gsap";
 import { map } from "rxjs/operators";
  */
 import { Renderer } from "interactive-shader-format";
-import fsISF from "./glitch-flood";
+import { isfFragment, isfVertex } from './isf/glitch-flood'
 
 // webcam
 
@@ -27,16 +27,12 @@ const canvas: HTMLCanvasElement = document.querySelector("#canvas");
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
 
-image.onload = function(){
-  console.log('loaded')
-}
-
 const gl = canvas.getContext("webgl",  {
   antialias: true,
   powerPreference: "high-performance"
 });
 const renderer = new Renderer(gl);
-renderer.loadSource(fsISF);
+renderer.loadSource(isfFragment, isfVertex)
 
 
 const resize = () => {
