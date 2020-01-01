@@ -5,8 +5,7 @@ import { gsap } from "gsap";
 import { map } from "rxjs/operators";
  */
 import { Renderer } from "interactive-shader-format";
-import { isfFragment, isfVertex } from './isf/glitch-flood'
-
+import { isfFragment, isfVertex } from './isf/city-lights'
 // webcam
 
 let aspectRatio = 1.333;
@@ -58,7 +57,8 @@ const animate = () => {
     then = now - (delta % fpsMs);
     render({
       inputImage: video,
-      time: time
+      intensity: 0.5,
+      TIME: time
     })
     resize();
     time += 0.01;
@@ -95,13 +95,6 @@ const success = stream => {
   const videoTracks = stream.getVideoTracks();
   const videoSettings = videoTracks[0].getSettings();
   const aspectRatio = videoSettings.width / videoSettings.height;
-
-  console.log(
-    "Got stream with constraints:",
-    videoTracks[0].label,
-    videoTracks[0].getSettings(),
-    aspectRatio
-  );
 
   window.stream = stream; // make variable available to browser console
   if (video.mozSrcObject !== undefined) {
