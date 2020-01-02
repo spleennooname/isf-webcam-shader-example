@@ -6,14 +6,26 @@ import { Renderer } from "interactive-shader-format";
 import { isfFragment, isfVertex } from "./isf/guilloche";
 
 const guilloche = {
-  uHeight: 0.01,
+  uHeight: 0.003,
   uSpacing: 0.01,
   uFrequency: 30,
-  uDist: 0.1,
+  uDist: 0.14,
   uAlias: 0.03,
-  uBright: 0.8,
-  uWidth: 0.02
+  uBright: 1.2,
+  uWidth: 0.015
 }
+
+/**
+ * const float levels = 10.0;
+const float angle = PI/levels;
+const float spacing = 0.01;
+const float frequency = 30.0;
+const float height = 0.003;
+const float width = 0.015;
+const float alias = 0.002;
+const float bright = 1.2;
+const float dist = 0.2;
+ */
 
 const constraints = {
   audio: false,
@@ -67,12 +79,12 @@ const animate = () => {
   delta = now - then;
   if (delta > fpsMs) {
     then = now - (delta % fpsMs);
-    resize();
     render({
       inputImage: video,
       ...guilloche,
       TIME: time
     });
+    resize();
     time += 0.01;
   }
 };

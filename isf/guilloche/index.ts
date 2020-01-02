@@ -74,7 +74,7 @@ export const isfFragment = `
 #define R RENDERSIZE
 
 #define PI 3.14159265359
-#define uLevels 6.0
+#define uLevels 10.0
 
 #define luma(color) dot(color, vec3(0.299, 0.587, 0.114))
 
@@ -115,7 +115,7 @@ void main() {
   }
   result /= levels;
   // increase contrast
-  // result = smoothstep(0.6, 1.0, result);
+  //result = smoothstep(0.1, 1.0, result);
   gl_FragColor= vec4(vec3(result), 1.0);
 }
 `
