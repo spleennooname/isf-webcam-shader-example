@@ -70,7 +70,7 @@ const animate = () => {
     resize();
     render({
       inputImage: video,
-      intensity: 0.5,
+      ...guilloche,
       TIME: time
     });
     time += 0.01;
