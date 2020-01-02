@@ -5,7 +5,17 @@ import { gsap } from "gsap";
 import { map } from "rxjs/operators";
  */
 import { Renderer } from "interactive-shader-format";
-import { isfFragment, isfVertex } from "./isf/city-lights";
+import { isfFragment, isfVertex } from "./isf/guilloche";
+
+const guilloche = {
+  uHeight: 0.01,
+  uSpacing: 0.01,
+  uFrequency: 30,
+  uDist: 0.1,
+  uAlias: 0.03,
+  uBright: 0.8,
+  uWidth: 0.02
+}
 // webcam
 
 let aspectRatio = 1.333;
