@@ -1,6 +1,4 @@
-
 export const isfFragment = `
-/*
 /*{
 	"CREDIT": "by vivacchio",
 	"DESCRIPTION": "",
@@ -89,47 +87,40 @@ const float alias = 0.002;
 const float bright = 1.2;
 const float dist = 0.2;
 
-//const vec3 color = vec3(0.15,0.15,0.15);
-
-
 mat2 rotate2d(float angle) {
   return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
 }
 
 void main() {
-	
-float result = 0.0;
-    // normalized pixel coordinates (from 0 to 1)
-    vec2 uv = gl_FragCoord.xy/R.xy;
-    // input texture from channel 0
-    vec4 tex = IMG_NORM_PIXEL(inputImage,uv);
-    float t = float(tex);
-    
-    // diagonal waves
-    for (float i = 0.0; i<levels; i+=1.0) {
-        // new uv coordinate
-        vec2 nuv = rotate2d(angle + angle*i) * uv;
-        // calculate wave
-        float wave = sin(nuv.x * uFrequency) * uHeight;
-        float x = (uSpacing/2.0) + wave;
-        float y = mod(nuv.y, uSpacing);
-        // wave lines
-        float line = uWidth * (1.0 - (t*uBright) - (i*uDist) );
-        float waves = smoothstep(line, line+uAlias, abs(x-y) );
-        // save the result for the next wave
-        result += waves;
-    }
-    result /= levels;
-    // increase contrast
-    //result = smoothstep(0.2, 1.0, result);
-    // add some color
-    vec3 colored = vec3(result);
-    gl_FragColor= vec4(colored, 1.0);
+  float result = 0.0;
+  // normalized pixel coordinates (from 0 to 1)
+  vec2 uv = gl_FragCoord.xy/R.xy;
+  // input texture from channel 0
+  vec4 tex = IMG_NORM_PIXEL(inputImage,uv);
+  float t = float(tex);
+  // diagonal waves
+  for (float i = 0.0; i<levels; i+=1.0) {
+    // new uv coordinate
+    vec2 nuv = rotate2d(angle + angle*i) * uv;
+    // calculate wave
+    float wave = sin(nuv.x * uFrequency) * uHeight;
+    float x = (uSpacing/2.0) + wave;
+    float y = mod(nuv.y, uSpacing);
+    // wave lines
+    float line = uWidth * (1.0 - (t*uBright) - (i*uDist) );
+    float waves = smoothstep(line, line+uAlias, abs(x-y) );
+    // save the result for the next wave
+    result += waves;
+  }
+  result /= levels;
+  // increase contrast
+  // result = smoothstep(0.2, 1.0, result);
+  gl_FragColor= vec4(vec3(result), 1.0);
 }
-`
+`;
 
 export const isfVertex = `
   void main(){
     isf_vertShaderInit();
   }
-`
+`;
