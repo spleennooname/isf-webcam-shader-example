@@ -1,74 +1,75 @@
 export const isfFragment = `
-/*{
-	"CREDIT": "by vivacchio",
-	"DESCRIPTION": "",
-	"CATEGORIES": [
-		"styles"
-	],
-	"INPUTS": [
-		{
-			"NAME": "inputImage",
-			"TYPE": "image"
-		},
-		 {
-	      "LABEL": "uSpacing",
-	      "NAME": "uSpacing",
-	      "TYPE": "float",
-	      "DEFAULT": 0.01,
-	      "MIN": 0,
-	      "MAX": 0.02
-	    },
-	    {
-	      "LABEL": "uFrequency",
-	      "NAME": "uFrequency",
-	      "TYPE": "float",
-	      "DEFAULT": 30,
-	      "MIN": 0,
-	      "MAX": 100
-	    },
-	    {
-	      "LABEL": "uHeight",
-	      "NAME": "uHeight",
-	      "TYPE": "float",
-	      "DEFAULT": 0.003,
-	      "MIN": 0,
-	      "MAX": 0.015
-	    },
-	     {
-	      "LABEL": "uWidth",
-	      "NAME": "uWidth",
-	      "TYPE": "float",
-	      "DEFAULT": 0.015,
-	      "MIN": 0.01,
-	      "MAX": 0.02
-	    },
-	    {
-	      "LABEL": "uAlias",
-	      "NAME": "uAlias",
-	      "TYPE": "float",
-	      "DEFAULT": 0.003,
-	      "MIN": 0.001,
-	      "MAX": 0.010
-	    },
-	    {
-	      "LABEL": "uBright",
-	      "NAME": "uBright",
-	      "TYPE": "float",
-	      "DEFAULT": 0.75,
-	      "MIN": 0.5,
-	      "MAX": 1.25
-	    },
-	    {
-	      "LABEL": "uDist",
-	      "NAME": "uDist",
-	      "TYPE": "float",
-	      "DEFAULT": 0.2,
-	      "MIN": 0.1,
-	      "MAX": 0.25
-	    }
-		}
-	]
-}*/
+/*
+{
+  "CREDIT":"by vivacchio",
+  "DESCRIPTION":"",
+  "CATEGORIES":[
+    "styles"
+  ],
+  "INPUTS":[
+    {
+      "NAME":"inputImage",
+      "TYPE":"image"
+    },
+    {
+      "LABEL":"uSpacing",
+      "NAME":"uSpacing",
+      "TYPE":"float",
+      "DEFAULT":0.01,
+      "MIN":0,
+      "MAX":0.02
+    },
+    {
+      "LABEL":"uFrequency",
+      "NAME":"uFrequency",
+      "TYPE":"float",
+      "DEFAULT":30,
+      "MIN":0,
+      "MAX":100
+    },
+    {
+      "LABEL":"uHeight",
+      "NAME":"uHeight",
+      "TYPE":"float",
+      "DEFAULT":0.003,
+      "MIN":0,
+      "MAX":0.015
+    },
+    {
+      "LABEL":"uWidth",
+      "NAME":"uWidth",
+      "TYPE":"float",
+      "DEFAULT":0.015,
+      "MIN":0.01,
+      "MAX":0.02
+    },
+    {
+      "LABEL":"uAlias",
+      "NAME":"uAlias",
+      "TYPE":"float",
+      "DEFAULT":0.003,
+      "MIN":0.001,
+      "MAX":0.010
+    },
+    {
+      "LABEL":"uBright",
+      "NAME":"uBright",
+      "TYPE":"float",
+      "DEFAULT":0.75,
+      "MIN":0.5,
+      "MAX":1.25
+    },
+    {
+      "LABEL":"uDist",
+      "NAME":"uDist",
+      "TYPE":"float",
+      "DEFAULT":0.2,
+      "MIN":0.1,
+      "MAX":0.25
+    }
+  ]
+}
+*/
 
 #define R RENDERSIZE
 
@@ -117,10 +118,10 @@ void main() {
   // result = smoothstep(0.2, 1.0, result);
   gl_FragColor= vec4(vec3(result), 1.0);
 }
-`;
+`
 
 export const isfVertex = `
   void main(){
     isf_vertShaderInit();
   }
-`;
+`
