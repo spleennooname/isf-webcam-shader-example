@@ -115,7 +115,7 @@ void main() {
   }
   result /= levels;
   // increase contrast
-  // result = smoothstep(0.2, 1.0, result);
+  // result = smoothstep(0.6, 1.0, result);
   gl_FragColor= vec4(vec3(result), 1.0);
 }
 `

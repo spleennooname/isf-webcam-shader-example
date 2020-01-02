@@ -1,9 +1,7 @@
 console.clear();
 import "./style.scss";
 import { gsap } from "gsap";
-/* import { of } from "rxjs";
-import { map } from "rxjs/operators";
- */
+
 import { Renderer } from "interactive-shader-format";
 import { isfFragment, isfVertex } from "./isf/guilloche";
 
@@ -16,9 +14,7 @@ const guilloche = {
   uBright: 0.8,
   uWidth: 0.02
 }
-// webcam
 
-let aspectRatio = 1.333;
 const constraints = {
   audio: false,
   video: {
@@ -26,6 +22,9 @@ const constraints = {
     height: { min: 480 }
   }
 };
+// webcam
+
+let aspectRatio = 1.333;
 let then = window.performance.now();
 let now = 0;
 let delta = 0;
@@ -36,6 +35,7 @@ const fpsMs = fps / 1000;
 
 const video: HTMLVideoElement = document.querySelector("#video");
 const image: HTMLImageElement = document.querySelector("#image");
+
 const canvas: HTMLCanvasElement = document.querySelector("#canvas");
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
@@ -78,7 +78,7 @@ const animate = () => {
 };
 
 const render = (renderObject = {}) => {
-  for (var unif in renderObject) {
+  for (const unif in renderObject) {
     renderer.setValue(unif, renderObject[unif]);
   }
   renderer.draw(canvas);
