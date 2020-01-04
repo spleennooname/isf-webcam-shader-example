@@ -90,14 +90,14 @@ mat2 rotate2d(float angle) {
   return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
 }
 
-float luma( vec3 rgb ){
-  return float(rgb);
+float luma(vec4 color) {
+  return dot(color.rgb, vec3(0.299, 0.587, 0.114));
 }
 
 void main() {
   float result = 0.0;
   vec2 uv = gl_FragCoord.xy/R.xy;
-  float tex = luma( IMG_NORM_PIXEL(inputImage,uv).rgb );
+  float tex = luma( IMG_NORM_PIXEL(inputImage,uv) );
   // diagonal waves
   for (float i = 0.0; i<levels; i+=1.0) {
     // new uv coordinate
