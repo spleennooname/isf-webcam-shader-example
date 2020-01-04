@@ -11,8 +11,8 @@ const guilloche = {
   uFrequency: 30,
   uDist: 0.14,
   uAlias: 0.03,
-  uBright: 1.2,
-  uWidth: 0.015
+  uBright: 1.8,
+  uWidth: 0.02
 }
 
 /**

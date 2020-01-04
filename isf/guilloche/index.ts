@@ -55,9 +55,9 @@ export const isfFragment = `
       "LABEL":"uBright",
       "NAME":"uBright",
       "TYPE":"float",
-      "DEFAULT":0.75,
-      "MIN":0.5,
-      "MAX":1.25
+      "DEFAULT":1.8,
+      "MIN":1,
+      "MAX":2.5
     },
     {
       "LABEL":"uDist",
@@ -72,20 +72,21 @@ export const isfFragment = `
 */
 
 #define R RENDERSIZE
+#define t TIME
 
 #define PI 3.14159265359
-#define uLevels 10.0
+#define uLevels 6.0
 
 #define luma(color) dot(color, vec3(0.299, 0.587, 0.114))
 
-const float levels = 10.0;
+const float levels = 6.0;
 const float angle = PI/levels;
 const float spacing = 0.01;
 const float frequency = 30.0;
 const float height = 0.003;
-const float width = 0.015;
+const float width = 0.02;
 const float alias = 0.002;
-const float bright = 1.2;
+const float bright = 1.8;
 const float dist = 0.2;
 
 mat2 rotate2d(float angle) {
@@ -94,28 +95,25 @@ mat2 rotate2d(float angle) {
 
 void main() {
   float result = 0.0;
-  // normalized pixel coordinates (from 0 to 1)
   vec2 uv = gl_FragCoord.xy/R.xy;
-  // input texture from channel 0
-  vec4 tex = IMG_NORM_PIXEL(inputImage,uv);
-  float t = float(tex);
+  float tex = float( luma( IMG_NORM_PIXEL(inputImage,uv).rgb ) );
   // diagonal waves
   for (float i = 0.0; i<levels; i+=1.0) {
     // new uv coordinate
     vec2 nuv = rotate2d(angle + angle*i) * uv;
     // calculate wave
-    float wave = sin(nuv.x * uFrequency) * uHeight;
-    float x = (uSpacing/2.0) + wave;
-    float y = mod(nuv.y, uSpacing);
+    float wave = sin(nuv.x * frequency) * height;
+    float x = (spacing/2.0) + wave;
+    float y = mod(nuv.y, spacing);
     // wave lines
-    float line = uWidth * (1.0 - (t*uBright) - (i*uDist) );
-    float waves = smoothstep(line, line+uAlias, abs(x-y) );
+    float line = width * (1.0 - (tex*bright) - (i*dist) );
+    float waves = smoothstep(line, line+alias, abs(x-y) );
     // save the result for the next wave
     result += waves;
   }
   result /= levels;
   // increase contrast
-  //result = smoothstep(0.1, 1.0, result);
+  result = smoothstep(0.45, 1.0, result);
   gl_FragColor= vec4(vec3(result), 1.0);
 }
 `
