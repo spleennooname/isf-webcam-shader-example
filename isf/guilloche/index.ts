@@ -86,7 +86,7 @@ export const isfFragment = `
 #define PI 3.14159265359
 #define uLevels 6.0
 
-#define NUM_SAMPLES 32.0
+#define NUM_SAMPLES 8.0
 
 const float levels = 6.0;
 const float angle = PI/levels;
@@ -106,6 +106,30 @@ float luma(vec4 color) {
   return dot(color.rgb, vec3(0.299, 0.587, 0.114));
 }
 
+vec4 light(vec2 uv, vec2 pos, float t) {
+ 
+    vec2 tc = uv.xy;
+    
+    vec2 deltaUv = tc - pos.xy;
+    deltaUv *= (1.0 / NUM_SAMPLES * uDensity);
+    
+    float illuminationDecay = 1.0;
+
+    vec4 color = IMG_NORM_PIXEL(bufferA, tc.xy);
+	
+    tc += deltaUv * fract( sin( dot(uv.xy + fract(t), vec2(12.9898, 78.233)))* 43758.5453 );
+    for (float i = 0.0; i < NUM_SAMPLES; i+=1.0)
+	{
+        tc -= deltaUv;
+        vec4 sampleTex = IMG_NORM_PIXEL(bufferA, tc.xy);
+
+        sampleTex *= illuminationDecay * uWeight;
+        color += sampleTex;
+        illuminationDecay *= uDecay;
+    }
+    
+    return color * vec4(0.5);
+}
 
 vec4 rblur( vec2 uv, vec2 center, float falloffExp){
     // Translate our floating point space to the center of our blur.
@@ -176,7 +200,7 @@ void main() {
     gl_FragColor= vec4(vec3(result), 1.0);
   }
   else if (PASSINDEX == 1){
-     gl_FragColor = rblur( uv, vec2(0.5, 0.5), 0.5);
+     gl_FragColor = light( uv, vec2(0.5, 0.5), t);
   }
 }
 `;
