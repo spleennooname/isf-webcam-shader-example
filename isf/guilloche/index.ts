@@ -104,6 +104,50 @@ float luma(vec4 color) {
   return dot(color.rgb, vec3(0.299, 0.587, 0.114));
 }
 
+
+vec4 rblur( vec2 uv, vec2 center, float falloffExp){
+    // Translate our floating point space to the center of our blur.
+    uv -= center;
+    float NUM_SAMPLES = 32.0;
+    // Go ahead and precompute the inverse of the number of samples.
+    // so we don't have any inner divisions.
+    float invSamples = 1.0 / NUM_SAMPLES;
+    
+    // Place to accumulate the result.
+    float result = 0.0;
+    
+    // Independent locations to store the results of each inner tap.
+    // Why? So each tap doesn't need to write back before the next one
+    // can start executing, preventing stalls. Works on x86 and piped
+    // MIPS and I think it helps this out too (at least on my old thinkpad).
+    float r0=0.0,r1=0.0,r2=0.0,r3=0.0;
+    
+    // We need to do each tap at a different index/position, so by storing
+    // them in a vector we can make incrementation a single op instead of 4.
+    vec4 indices = vec4(0,1,2,3);
+    
+	// Same thing with the scale.
+    vec4 scale = vec4(0);
+    
+    // Go through and and sample the texture.
+    for( float i = 0.0; i < NUM_SAMPLES; i+=4.0 ){
+        scale = indices*invSamples;
+        
+        r0 = IMG_NORM_PIXEL(bufferA, (uv*scale.x + center)).g;
+        r1 = IMG_NORM_PIXEL(bufferA, (uv*scale.y + center)).g;
+        r2 = IMG_NORM_PIXEL(bufferA, (uv*scale.z + center)).g;
+        r3 = IMG_NORM_PIXEL(bufferA, (uv*scale.w + center)).g;
+        
+        indices += 4.0;
+        
+        result += r0+r1+r2+r3;
+    }
+    
+    float b = pow(result * invSamples, falloffExp);
+    
+    return vec4(b,b,b,1.);
+}
+
 void main() {
   
   vec2 uv = gl_FragCoord.xy/R.xy;
@@ -131,7 +175,7 @@ void main() {
     gl_FragColor= vec4(vec3(result), 1.0);
   }
   else if (PASSINDEX == 1){
-     gl_FragColor= IMG_NORM_PIXEL(bufferA, uv);
+     gl_FragColor= rblur( uv, vec2(0.5, 0.5), 0.5);
   }
 }
 `;
