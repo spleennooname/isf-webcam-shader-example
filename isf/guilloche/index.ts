@@ -3,9 +3,6 @@ export const isfFragment = `
 {
   "CREDIT":"by vivacchio",
   "DESCRIPTION":"",
-  "CATEGORIES":[
-    "styles"
-  ],
   "INPUTS":[
     {
       "NAME":"inputImage",
@@ -77,7 +74,7 @@ export const isfFragment = `
 #define PI 3.14159265359
 #define uLevels 6.0
 
-#define luma(color) dot(color, vec3(0.299, 0.587, 0.114))
+// #define luma(color) dot(color, vec3(0.299, 0.587, 0.114))
 
 const float levels = 6.0;
 const float angle = PI/levels;
@@ -93,10 +90,14 @@ mat2 rotate2d(float angle) {
   return mat2(cos(angle), -sin(angle), sin(angle), cos(angle));
 }
 
+float luma( vec3 rgb ){
+  return float(rgb);
+}
+
 void main() {
   float result = 0.0;
   vec2 uv = gl_FragCoord.xy/R.xy;
-  float tex = float( luma( IMG_NORM_PIXEL(inputImage,uv).rgb ) );
+  float tex = luma( IMG_NORM_PIXEL(inputImage,uv).rgb );
   // diagonal waves
   for (float i = 0.0; i<levels; i+=1.0) {
     // new uv coordinate
