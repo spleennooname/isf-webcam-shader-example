@@ -101,7 +101,7 @@ void main() {
     // new uv coordinate
     vec2 nuv = rotate2d(angle + angle*i) * uv;
     // calculate wave
-    float fq = frequency/ 2 + 20.0 * sin(t);
+    float fq = (frequency/ 2.0) * (1.0 + sin(t *0.7) );
     float wave = sin(nuv.x * fq) * height;
     float x = (spacing/2.0) + wave;
     float y = mod(nuv.y, spacing);
