@@ -64,6 +64,18 @@ export const isfFragment = `
       "MIN":0.1,
       "MAX":0.25
     }
+  ],
+  "ISFVSN": "2",
+  "PASSES": [
+    {
+      "PERSISTENT": true,
+      "TARGET": "bufferA",
+      "WIDTH": "$WIDTH/1.25",
+	  	"HEIGHT": "$HEIGHT/1.25"
+    },
+    {
+        	
+    }
   ]
 }
 */
@@ -112,13 +124,13 @@ void main() {
     result += waves;
   }
   result /= levels;
-  result = smoothstep(0.45, 1.0, result);
+  result = smoothstep(1.0, 0.0, result);
   gl_FragColor= vec4(vec3(result), 1.0);
 }
-`
+`;
 
 export const isfVertex = `
   void main(){
     isf_vertShaderInit();
   }
-`
+`;
