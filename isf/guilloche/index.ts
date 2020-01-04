@@ -86,6 +86,8 @@ export const isfFragment = `
 #define PI 3.14159265359
 #define uLevels 6.0
 
+#define NUM_SAMPLES 32.0
+
 const float levels = 6.0;
 const float angle = PI/levels;
 const float spacing = 0.01;
@@ -108,7 +110,6 @@ float luma(vec4 color) {
 vec4 rblur( vec2 uv, vec2 center, float falloffExp){
     // Translate our floating point space to the center of our blur.
     uv -= center;
-    float NUM_SAMPLES = 32.0;
     // Go ahead and precompute the inverse of the number of samples.
     // so we don't have any inner divisions.
     float invSamples = 1.0 / NUM_SAMPLES;
@@ -175,7 +176,7 @@ void main() {
     gl_FragColor= vec4(vec3(result), 1.0);
   }
   else if (PASSINDEX == 1){
-     gl_FragColor= rblur( uv, vec2(0.5, 0.5), 0.5);
+     gl_FragColor = rblur( uv, vec2(0.5, 0.5), 0.5);
   }
 }
 `;
