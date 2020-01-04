@@ -74,8 +74,6 @@ export const isfFragment = `
 #define PI 3.14159265359
 #define uLevels 6.0
 
-// #define luma(color) dot(color, vec3(0.299, 0.587, 0.114))
-
 const float levels = 6.0;
 const float angle = PI/levels;
 const float spacing = 0.01;
