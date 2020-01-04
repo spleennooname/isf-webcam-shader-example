@@ -105,11 +105,12 @@ float luma(vec4 color) {
 }
 
 void main() {
-  float result = 0.0;
+  
   vec2 uv = gl_FragCoord.xy/R.xy;
-  float tex = luma( IMG_NORM_PIXEL(inputImage, uv) );
 
   if (PASSINDEX == 0)	{
+    float result = 0.0;
+    float tex = luma( IMG_NORM_PIXEL(inputImage, uv) );
     // diagonal waves
     for (float i = 0.0; i<levels; i+=1.0) {
       // new uv coordinate
@@ -128,6 +129,9 @@ void main() {
     result /= levels;
     result = smoothstep(1.0, 0.0, result);
     gl_FragColor= vec4(vec3(result), 1.0);
+  }
+  else if (PASSINDEX == 1){
+     gl_FragColor= IMG_NORM_PIXEL(bufferA, uv);
   }
 }
 `;
