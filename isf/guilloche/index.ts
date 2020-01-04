@@ -107,7 +107,7 @@ float luma(vec4 color) {
 }
 
 const float uDensity = 0.6;
-const float uWeight; = 0.6;
+const float uWeight = 0.6;
 const float uDecay = 0.5;
 vec4 light(vec2 uv, vec2 pos, float t) {
  
