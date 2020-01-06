@@ -84,9 +84,9 @@ export const isfFragment = `
 #define t TIME
 
 #define PI 3.14159265359
-#define uLevels 6.0
+#define uLevels 10.0
 
-#define NUM_SAMPLES 10.0
+#define NUM_SAMPLES 16.0
 
 
 mat2 rotate2d(float angle) {
@@ -103,10 +103,10 @@ const float angle = PI/levels;
 const float spacing = 0.01;
 const float frequency = 30.0;
 const float height = 0.003;
-const float width = 0.02;
+const float width = 0.05;
 const float alias = 0.002;
-const float bright = 0.75;
-const float dist = 0.2;
+const float bright = 0.95;
+const float dist = 0.15;
 
 vec3 guilloche( vec2 uv, float t){
   float result = 0.0;
@@ -131,8 +131,8 @@ vec3 guilloche( vec2 uv, float t){
 }   
 
 // godray
-const float uDensity = 0.7;
-const float uWeight = 0.6;
+const float uDensity = 0.9;
+const float uWeight = 0.65;
 const float uDecay = 0.75;
 vec3 light(vec2 uv, vec2 pos, float t) {
  
@@ -140,7 +140,7 @@ vec3 light(vec2 uv, vec2 pos, float t) {
   vec2 deltaUv = tc - pos.xy;
   deltaUv *= (1.0 / NUM_SAMPLES * uDensity);
     
-  float illuminationDecay = 0.45;
+  float illuminationDecay = 0.5;
   vec3 color = IMG_NORM_PIXEL(bufferA, tc.xy).rgb;
   tc += deltaUv * fract( sin( dot(uv.xy + fract(t), vec2(12.9898, 78.233)))* 43758.5453 );
   for (float i = 0.0; i < NUM_SAMPLES; i+=1.0){
