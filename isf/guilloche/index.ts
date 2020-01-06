@@ -103,10 +103,10 @@ const float angle = PI/levels;
 const float spacing = 0.01;
 const float frequency = 30.0;
 const float height = 0.003;
-const float width = 0.05;
+const float width = 0.07;
 const float alias = 0.002;
-const float bright = 0.95;
-const float dist = 0.15;
+const float bright = 0.7;
+const float dist = 0.18;
 
 vec3 guilloche( vec2 uv, float t){
   float result = 0.0;
