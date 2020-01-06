@@ -86,7 +86,7 @@ export const isfFragment = `
 #define PI 3.14159265359
 #define uLevels 6.0
 
-#define NUM_SAMPLES 8.0
+#define NUM_SAMPLES 10.0
 
 const float levels = 6.0;
 const float angle = PI/levels;
@@ -112,12 +112,10 @@ const float uDecay = 0.75;
 vec4 light(vec2 uv, vec2 pos, float t) {
  
   vec2 tc = uv.xy;
-    
   vec2 deltaUv = tc - pos.xy;
   deltaUv *= (1.0 / NUM_SAMPLES * uDensity);
     
-  float illuminationDecay = 1.0;
-
+  float illuminationDecay = 0.45;
   vec4 color = IMG_NORM_PIXEL(bufferA, tc.xy);
   tc += deltaUv * fract( sin( dot(uv.xy + fract(t), vec2(12.9898, 78.233)))* 43758.5453 );
   for (float i = 0.0; i < NUM_SAMPLES; i+=1.0){
@@ -127,7 +125,7 @@ vec4 light(vec2 uv, vec2 pos, float t) {
     color += sampleTex;
     illuminationDecay *= uDecay;
   }
-  return color * vec4(0.5);
+  return color;
 }
 
 void main() {
