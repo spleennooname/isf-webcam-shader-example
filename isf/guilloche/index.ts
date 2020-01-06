@@ -106,6 +106,31 @@ float luma(vec4 color) {
   return dot(color.rgb, vec3(0.299, 0.587, 0.114));
 }
 
+// guilloche
+
+vec3 guilloche( vec2 uv, float t){
+  float result = 0.0;
+  float tex = luma( IMG_NORM_PIXEL(inputImage, uv) );
+  // diagonal waves
+  for (float i = 0.0; i<levels; i+=1.0) {
+    // new uv coordinate
+    vec2 nuv = rotate2d(angle + angle*i) * uv;
+    // calculate wave
+    float fq = (frequency/ 2.0) * (1.0 + sin(t *0.7) );
+    float wave = sin(nuv.x * fq) * height;
+    float x = (spacing/2.0) + wave;
+    float y = mod(nuv.y, spacing);
+    // wave lines
+    float line = width * (1.0 - (tex*bright) - (i*dist) );
+    float waves = smoothstep(line, line+alias, abs(x-y) );
+    // save the result for the next wave
+    result += waves;
+  }
+  result /= levels;
+  return vec3(result);
+}   
+
+// godray
 const float uDensity = 0.7;
 const float uWeight = 0.6;
 const float uDecay = 0.75;
@@ -133,26 +158,7 @@ void main() {
   vec2 uv = gl_FragCoord.xy/R.xy;
 
   if (PASSINDEX == 0)	{
-    float result = 0.0;
-    float tex = luma( IMG_NORM_PIXEL(inputImage, uv) );
-    // diagonal waves
-    for (float i = 0.0; i<levels; i+=1.0) {
-      // new uv coordinate
-      vec2 nuv = rotate2d(angle + angle*i) * uv;
-      // calculate wave
-      float fq = (frequency/ 2.0) * (1.0 + sin(t *0.7) );
-      float wave = sin(nuv.x * fq) * height;
-      float x = (spacing/2.0) + wave;
-      float y = mod(nuv.y, spacing);
-      // wave lines
-      float line = width * (1.0 - (tex*bright) - (i*dist) );
-      float waves = smoothstep(line, line+alias, abs(x-y) );
-      // save the result for the next wave
-      result += waves;
-    }
-    result /= levels;
-    result = smoothstep(0.0, 1.0, result);
-    gl_FragColor= vec4(vec3(result), 1.0);
+    gl_FragColor= vec4( guilloche(uv, t), 1.0);
   }
   else if (PASSINDEX == 1){
      gl_FragColor = light( uv, vec2(0.5, 0.5), t);
