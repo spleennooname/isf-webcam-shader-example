@@ -142,7 +142,7 @@ vec3 light(vec2 uv, vec2 pos, float t) {
     
   float illuminationDecay = 0.5;
   vec3 color = IMG_NORM_PIXEL(bufferA, tc.xy).rgb;
-  tc += deltaUv * fract( sin( dot(uv.xy + fract(t), vec2(12.9898, 78.233)))* 43758.5453 );
+  tc += deltaUv * 1.5 * fract( sin( dot(uv.xy + fract(t), vec2(12.9898, 78.233)))* 43758.5453 );
   for (float i = 0.0; i < NUM_SAMPLES; i+=1.0){
     tc -= deltaUv;
     vec3 sampleTex = IMG_NORM_PIXEL(bufferA, tc.xy).rgb;
