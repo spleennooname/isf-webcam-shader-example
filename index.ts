@@ -46,8 +46,6 @@ let aspectRatio = 1.333;
 const fpsMs = fps / 1000;
 
 const video: HTMLVideoElement = document.querySelector("#video");
-const image: HTMLImageElement = document.querySelector("#image");
-
 const canvas: HTMLCanvasElement = document.querySelector("#canvas");
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
