@@ -5,28 +5,6 @@ import { gsap } from "gsap";
 import { Renderer } from "interactive-shader-format";
 import { isfFragment, isfVertex } from "./isf/guilloche-ray";
 
-const guilloche = {
-  uHeight: 0.003,
-  uSpacing: 0.01,
-  uFrequency: 30,
-  uDist: 0.14,
-  uAlias: 0.03,
-  uBright: 1.8,
-  uWidth: 0.02
-}
-
-/**
- * const float levels = 10.0;
-const float angle = PI/levels;
-const float spacing = 0.01;
-const float frequency = 30.0;
-const float height = 0.003;
-const float width = 0.015;
-const float alias = 0.002;
-const float bright = 1.2;
-const float dist = 0.2;
- */
-
 const constraints = {
   audio: false,
   video: {
@@ -79,7 +57,6 @@ const animate = () => {
     then = now - (delta % fpsMs);
     render({
       inputImage: video,
-      ...guilloche,
       TIME: time
     });
     resize();
