@@ -82,11 +82,10 @@ const render = (renderObject = {}) => {
   renderer.draw(canvas);
 };
 
-async function init(e) {
+async function init() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
     success(stream);
-    e.target.disabled = true;
     then = window.performance.now();
     requestAnimationFrame(animate);
   } catch (e) {
@@ -123,7 +122,7 @@ const success = stream => {
       video.srcObject = stream;
     } else {
       window.URL =
-        window.URL || window.webkitURL || window.mozURL || window.msURL;
+      window.URL || window.webkitURL || window.mozURL || window.msURL;
       video.src = window.URL && window.URL.createObjectURL(stream);
     }
   }
@@ -131,12 +130,13 @@ const success = stream => {
 
 // start
 cover.addEventListener("click", e => {
-  gsap.to("#cover", 0.35, {
+  gsap.to("#cover", 1.0, {
     autoAlpha: 0,
     onComplete: () => {
-      init(e);
+      
     }
   });
+  init();
 });
 
 // rx
