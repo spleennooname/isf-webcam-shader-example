@@ -13,8 +13,6 @@ const constraints = {
   }
 };
 // webcam
-
-let aspectRatio = 1.333;
 let then = window.performance.now();
 let now = 0;
 let delta = 0;
@@ -22,9 +20,12 @@ let time = 0;
 let fps = 60;
 let aspectRatio = 1.333;
 const fpsMs = fps / 1000;
+const pixelRatio = window.devicePixelRatio || 1
 
 const video: HTMLVideoElement = document.querySelector("#video");
 const canvas: HTMLCanvasElement = document.querySelector("#canvas");
+const cover: HTMLElement = document.querySelector("#cover");
+
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
 
@@ -36,9 +37,8 @@ const renderer = new Renderer(gl);
 renderer.loadSource(isfFragment, isfVertex);
 
 const resize = () => {
-  const realToCSSPixels = window.devicePixelRatio;
-  const width = Math.floor(canvas.clientWidth * realToCSSPixels);
-  const height = Math.floor(canvas.clientHeight * realToCSSPixels);
+  const width = Math.floor(canvas.clientWidth * pixelRatio);
+  const height = Math.floor(canvas.clientHeight * pixelRatio);
   canvas.style.width = 100 * aspectRatio + "vh";
   canvas.style.height = "100vh";
   if (canvas.width !== width || canvas.height !== height) {
@@ -110,7 +110,7 @@ const success = stream => {
 };
 
 // start
-document.querySelector("#cover").addEventListener("click", e => {
+cover.addEventListener("click", e => {
   gsap.to("#cover", 0.35, {
     autoAlpha: 0,
     onComplete: () => {
