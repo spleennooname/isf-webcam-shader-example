@@ -3,7 +3,7 @@ import "./style.scss";
 
 import { gsap } from "gsap";
 import { Renderer } from "interactive-shader-format";
-import { isfFragment, isfVertex } from "./isf/guilloche-ray";
+import { isfFragment, isfVertex } from "./isf/predator";
 
 // webcam constrains object
 const constraints = {
