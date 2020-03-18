@@ -48,7 +48,8 @@ const resize = () => {
   const width = Math.round(gl.canvas.clientWidth * pixelRatio);
   const h = Math.round(window.innerHeight);
   const w = Math.round(window.innerWidth);
-  if (canvas.width !== width || canvas.height !== height) {
+  const needsResize = gl.canvas.width !== width || gl.canvas.height !== height;
+  if (needsResize) {
     if (w < h) {
       gl.canvas.width = Math.round(height / aspectRatio);
       gl.canvas.height = height;
@@ -57,6 +58,7 @@ const resize = () => {
       gl.canvas.height = Math.round(width / aspectRatio);
     }
   }
+  renderer.draw(canvas);
 };
 
 const animate = () => {
@@ -87,7 +89,7 @@ async function init() {
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
     success(stream);
     then = window.performance.now();
-    requestAnimationFrame(animate);
+    animate();
   } catch (e) {
     error(e);
   }
@@ -122,7 +124,7 @@ const success = stream => {
       video.srcObject = stream;
     } else {
       window.URL =
-      window.URL || window.webkitURL || window.mozURL || window.msURL;
+        window.URL || window.webkitURL || window.mozURL || window.msURL;
       video.src = window.URL && window.URL.createObjectURL(stream);
     }
   }
@@ -130,13 +132,10 @@ const success = stream => {
 
 // start
 cover.addEventListener("click", e => {
-  gsap.to("#cover", 1.0, {
+  gsap.to(cover, 0.85, {
     autoAlpha: 0,
-    onComplete: () => {
-      
-    }
+    onComplete: () => init()
   });
-  init();
 });
 
 // rx
