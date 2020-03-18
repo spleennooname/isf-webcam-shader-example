@@ -11,8 +11,20 @@ export const isfFragment = `
             "NAME": "inputImage",
             "TYPE": "image"
         }
+    ],
+    "ISFVSN": "2",
+    "PASSES": [
+        {
+            "PERSISTENT": true,
+            "TARGET": "buffer",
+            "WIDTH": "$WIDTH/1.0",
+	        "HEIGHT": "$HEIGHT/1.0"
+        },
+        {
+        }
     ]
 }
+
 */
 
 // useful defines for concise code
@@ -22,23 +34,31 @@ export const isfFragment = `
 vec3 heat(float v) {
     float value = 1.0 - v;
     vec3 rgb = vec3(
-      	smoothstep(0.5, 0.25, value),
-      	value < 0.25 ? smoothstep(0.0, 0.25, value) : smoothstep(1.0, 0.5, value),
+      smoothstep(0.5, 0.25, value),
+      value < 0.25 ? smoothstep(0.0, 0.25, value) : smoothstep(1.0, 0.5, value),
     	smoothstep(0.25, 0.5, value)
 	);
 	float factor = 0.5 + 0.5 * smoothstep(0.0, 0.1, value);
-  return factor * rgb;
+    return factor * rgb;
 }
+
 
 void main() {
 	// normalize uv coords
 	vec2 uv = gl_FragCoord.xy / R.xy;
-  // original color rgb
-  vec3 rgbImage = IMG_NORM_PIXEL(inputImage, uv).rgb;
+  // original color rgba
+  vec4 imageColor = IMG_NORM_PIXEL(inputImage, uv);
     
-  float sum = DELTA + smoothstep( rgbImage.g, 0.0, distance(rgbImage.rg, uv) );
-    
-  gl_FragColor = vec4( heat(sum), 1.0 );    
+  if (PASSINDEX == 0)	{
+    	float sum = DELTA + smoothstep( imageColor.g, 0.0, distance(imageColor.rg, uv) );
+    	vec4 heatColor = vec4( heat(sum), 1.0 );
+      
+    	gl_FragColor =  mix(heatColor, imageColor, DELTA);
+      
+  }
+  else if (PASSINDEX == 1)	{
+    gl_FragColor = IMG_NORM_PIXEL(buffer, uv);
+  }  
 }
 `;
 
