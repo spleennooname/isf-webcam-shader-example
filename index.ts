@@ -128,6 +128,7 @@ const success = stream => {
       video.src = window.URL && window.URL.createObjectURL(stream);
     }
   }
+  resize()
 };
 
 // start
