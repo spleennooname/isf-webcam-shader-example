@@ -8,10 +8,7 @@ import { isfFragment, isfVertex } from "./isf/guilloche-ray";
 // webcam constrains object
 const constraints = {
   audio: false,
-  video: {
-    width: { min: 640 },
-    height: { min: 480 }
-  }
+  video: true
 };
 
 // webcam
@@ -21,11 +18,11 @@ let delta = 0;
 let time = 0;
 let fps = 60;
 
-let aspectRatio = 1.333;
 const fpsMs = fps / 1000;
-
+// assuming 
+let aspectRatio = 1.333;
+// device pixel ratio for device
 const pixelRatio = window.devicePixelRatio || 1;
-
 // dom objects of relevance
 const video: HTMLVideoElement = document.querySelector("#video");
 const canvas: HTMLCanvasElement = document.querySelector("#canvas");
