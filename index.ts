@@ -110,14 +110,11 @@ const error = e => {
 const success = stream => {
   // check iOS device
   const ios = /iPad|iPhone|iPod/.test(navigator.userAgent);
-  // set video 
+  // set video attributes
   video.setAttribute("autoplay", "");
   video.setAttribute("muted", "true");
   video.setAttribute("playsinline", "");
-  const videoTracks = stream.getVideoTracks();
-  const videoSettings = videoTracks[0].getSettings();
-  const videoTracks = stream.getVideoTracks();
-  const videoSettings = videoTracks[0].getSettings();
+  const videoSettings = stream.getVideoTracks()[0].getSettings();
   // ccompute aspect ratio (ios swap height/width)
   aspectRatio = ios
     ? videoSettings.height / videoSettings.width
