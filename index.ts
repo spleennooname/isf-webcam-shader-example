@@ -20,7 +20,7 @@ let time = 0;
 let fps = 60;
 let aspectRatio = 1.333;
 const fpsMs = fps / 1000;
-const pixelRatio = window.devicePixelRatio || 1
+const pixelRatio = window.devicePixelRatio || 1;
 
 const video: HTMLVideoElement = document.querySelector("#video");
 const canvas: HTMLCanvasElement = document.querySelector("#canvas");
@@ -30,21 +30,32 @@ canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
 
 const gl = canvas.getContext("webgl", {
-  antialias: true,
-  powerPreference: "high-performance"
+  powerPreference: "default",
+  preserveDrawingBuffer: true,
+  desynchronized: true,
+  antialias: true
 });
+
 const renderer = new Renderer(gl);
-renderer.loadSource(isfFragment, isfVertex);
+try {
+  renderer.loadSource(isfFragment, isfVertex);
+} catch (err) {
+  console.error("isf:", err.toString());
+}
 
 const resize = () => {
-  const width = Math.floor(canvas.clientWidth * pixelRatio);
-  const height = Math.floor(canvas.clientHeight * pixelRatio);
-  canvas.style.width = 100 * aspectRatio + "vh";
-  canvas.style.height = "100vh";
+  const height = Math.round(gl.canvas.clientHeight * pixelRatio);
+  const width = Math.round(gl.canvas.clientWidth * pixelRatio);
+  const h = Math.round(window.innerHeight);
+  const w = Math.round(window.innerWidth);
   if (canvas.width !== width || canvas.height !== height) {
-    canvas.width = width;
-    canvas.height = height;
-    renderer.draw(canvas);
+    if (w < h) {
+      gl.canvas.width = Math.round(height / aspectRatio);
+      gl.canvas.height = height;
+    } else {
+      gl.canvas.width = width;
+      gl.canvas.height = Math.round(width / aspectRatio);
+    }
   }
 };
 
@@ -55,11 +66,11 @@ const animate = () => {
   delta = now - then;
   if (delta > fpsMs) {
     then = now - (delta % fpsMs);
+    resize();
     render({
       inputImage: video,
       TIME: time
     });
-    resize();
     time += 0.01;
   }
 };
@@ -93,7 +104,17 @@ const success = stream => {
   video.setAttribute("playsinline", "");
   const videoTracks = stream.getVideoTracks();
   const videoSettings = videoTracks[0].getSettings();
-  aspectRatio = videoSettings.width / videoSettings.height;
+  const ios = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const videoTracks = stream.getVideoTracks();
+  const videoSettings = videoTracks[0].getSettings();
+  // 1st canvas resize, according video size
+  gl.canvas.width = videoSettings.width;
+  gl.canvas.height = videoSettings.height;
+  // compute aspectRatio
+  aspectRatio = ios
+    ? videoSettings.height / videoSettings.width
+    : videoSettings.width / videoSettings.height;
+
   window.stream = stream;
   if (video.mozSrcObject !== undefined) {
     video.mozSrcObject = stream;
@@ -106,7 +127,6 @@ const success = stream => {
       video.src = window.URL && window.URL.createObjectURL(stream);
     }
   }
-  resize();
 };
 
 // start
