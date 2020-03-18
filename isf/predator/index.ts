@@ -52,9 +52,7 @@ void main() {
   if (PASSINDEX == 0)	{
     	float sum = DELTA + smoothstep( imageColor.g, 0.0, distance(imageColor.rg, uv) );
     	vec4 heatColor = vec4( heat(sum), 1.0 );
-      
-    	gl_FragColor =  mix(heatColor, imageColor, DELTA);
-      
+    	gl_FragColor =  mix(heatColor, imageColor, 0.3);
   }
   else if (PASSINDEX == 1)	{
     gl_FragColor = IMG_NORM_PIXEL(buffer, uv);
