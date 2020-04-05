@@ -26,15 +26,8 @@ export const isfFragment = `
     {
       "TARGET": "buffer",
       "DESCRIPTION": "blur image source",
-      "WIDTH": "floor($WIDTH/1.0)",
-      "HEIGHT": "floor($HEIGHT/1.0)",
-      "PERSISTENT": true
-    },
-     {
-      "TARGET": "buffer1",
-      "DESCRIPTION": "blur image source",
-      "WIDTH": "floor($WIDTH/1.0)",
-      "HEIGHT": "floor($HEIGHT/1.0)",
+      "WIDTH": "floor($WIDTH/1.2)",
+      "HEIGHT": "floor($HEIGHT/1.2)",
       "PERSISTENT": true
     }
   ]
@@ -50,12 +43,12 @@ export const isfFragment = `
 #define LUMA( rgba ) dot( vec4(0.299, 0.587, 0.114, 0.), rgba )
 
 // blur
-#define BLUR_RADIUS 4.0
+#define BLUR_RADIUS 3.0
 #define PI 3.141592
 
 // vec2 uv - uv coordinates
 // return rgba color, blurred
-vec4 blur( vec2 uv ){
+vec4 blur( vec2 uv){
     vec2 pixelOffset = 1.0 / R.xy;
     float start = 2.0 / BLUR_RADIUS;
 	  vec2 scale = 0.5 * BLUR_RADIUS * 2.0 * pixelOffset.xy;
@@ -106,7 +99,7 @@ vec4 heat(vec4 color, vec2 uv) {
     float r = smoothstep(0.5, 0.25, value);
     float g = value < 0.25 ? smoothstep(0.0, 0.25, value) : smoothstep(1., 0.5, value);
     float b = smoothstep(0.4, 0.6, value);
-	float f =  0.5 + 0.5 * smoothstep(0.0, 0.9, value);
+	  float f =  0.5 + 0.5 * smoothstep(0.0, 0.9, value);
     return f * vec4(r, g, b, 1.);
 }
 
@@ -114,24 +107,32 @@ vec4 heat(vec4 color, vec2 uv) {
 void main() {
 	// normalize uv coords [0,1] vertically
 	vec2 uv = gl_FragCoord.xy / R.xy;
+    
     // compute noise contribute from vertical uv and time
     float noise = hash21( vec2(uv.y, T*0.1) ) * .08;
+
     // 1: blurring, no sRGB -> flat here. Empirical choice result based.
-    vec4 blurCol = blur(uv);
+    vec4 blurCol = blur(uv); 
+
     // 2: heatamp from blurred image
     vec4 heatCol = heat( blurCol, uv ) * (1. - noise);
     // add a (little) jittering with DELTA time
-    heatCol += DELTA * 0.15;
+    ;
 
     if (PASSINDEX == 0) {
 
     } else if (PASSINDEX == 1) {
 
     }
+    
     // get color from buffer
     vec4 bufferCol = IMG_NORM_PIXEL(buffer, uv);
-    // linear interpolation from heatCol to bufferCol: create motion blur
-	  gl_FragColor = mix( heatCol,  bufferCol, 0.8) ;
+    /* linear interpolation from heatCol to bufferCol: create motion blur
+    *
+    */
+    vec4 outCol =  mix( heatCol,  bufferCol, 0.92);
+    outCol += DELTA * 0.5;
+	  gl_FragColor = outCol ;
 }
 `
 

@@ -58,7 +58,7 @@ const resize = () => {
       gl.canvas.width = Math.round(height / aspectRatio);
       gl.canvas.height = height;
     } else { // landscape
-      gl.canvas.width = width;
+      gl.canvas.width = width; 
       gl.canvas.height = Math.round(width / aspectRatio);
     }
   }
@@ -131,8 +131,6 @@ const success = stream => {
       video.src = window.URL && window.URL.createObjectURL(stream);
     }
   }
-  // 1st canvas resize, according video settings and aspect ratio
-  resize()
 };
 
 // start
